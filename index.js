@@ -1,12 +1,28 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
+
+const youtubeRoute = require('./routes/youtube');
+
 const app = express();
 const port = 3000;
+
+
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
     res.json({
         message: "Hello World"
     })
 })
+
+app.use('/youtube', youtubeRoute)
+
 
 const brands = [
     {
@@ -92,9 +108,11 @@ const brands = [
 // Handle limit and country
 
 // api/brands?country=Japan&limit=1
+// api/brands/:id
 
-app.get('/api/brands', (req, res) => {
+app.get('/api/brands/:brand_id', (req, res) => {
     // Request Queries
+    const id = req.params.id;
     const countryQuery = req.query.country;
     const limitQuery = req.query.limit;
     if (countryQuery) {
@@ -129,9 +147,9 @@ app.get('/api/brands', (req, res) => {
 
 // Handle offset
 
-// Handle sort
+// Handle sort ASC DESC
 
-app.get('/api/brandsSort', (req, res) => {
+app.get('/api/brands?sort=&offset', (req, res) => {
     const sort = req.query.sort;
     if(sort=='desc') {
         const arrDesc = JSON.parse(JSON.stringify(brands));
@@ -169,9 +187,15 @@ app.get('/api/brandsSort', (req, res) => {
     })
 })
 
+// Entities : Brand, Category, Product, 
+
+// api/brands/:id/products
+
 
 // Handle search
-// Handle description
+
+// Handle descripti
+
 // Handle name
 
 app.get('/api/name', (req, res) => {
